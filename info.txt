@@ -1,0 +1,147 @@
+================================================================================
+JANSEVA: MULTILINGUAL CITIZEN-FACING PUBLIC SERVICES & GRIEVANCE ASSISTANT
+================================================================================
+
+1. PROJECT OVERVIEW
+-------------------
+JanSeva is a responsive, accessible, and multilingual civic portal designed to 
+empower citizens to navigate public services, query official procedures in their 
+native language via voice or text, submit local grievances without compromising 
+personal privacy, and track redressal progress in real time. 
+
+Built using Next.js 15, TypeScript, React 19, and the Web Speech API, JanSeva 
+provides first-class support for English, Hindi (हिन्दी), and Telugu (తెలుగు), 
+combining strict source-grounded AI guidance with cryptographic security protocols.
+
+
+2. PROBLEM STATEMENT (PS)
+-------------------------
+In modern digital governance, citizens encounter several critical friction points:
+
+2.1 Linguistic Disconnect & Digital Divide
+- Most government portals provide complex administrative jargon predominantly in 
+  English or formal official prose, excluding millions of citizens whose primary 
+  medium is spoken Hindi or Telugu.
+- Spoken regional dialects feature morphological inflections and colloquial terms 
+  (e.g., Telugu case suffixes like "కార్డుకు", "దీపాలు", "పెన్షన్లు") that standard 
+  text-search engines fail to comprehend.
+
+2.2 Information Fragmentation & AI Hallucination Risks
+- Citizens frequently struggle to verify authentic government requirements, 
+  eligibility criteria, fees, and processing timelines across disparate department sites.
+- Standard generative AI chatbots frequently hallucinate non-existent government 
+  rules, create false citizen expectations, or invent bureaucratic eligibility requirements.
+
+2.3 Citizen Privacy & Surveillance Apprehensions
+- Traditional grievance portals unnecessarily mandate sensitive Personally Identifiable 
+  Information (PII)—such as Aadhaar numbers, phone numbers, and home addresses—even for 
+  routine municipal complaints (e.g., broken streetlights, water contamination). 
+- Citizens often hesitate to report local issues due to fear of harassment or data leaks.
+
+2.4 Insecure or Complex Grievance Tracking
+- Existing tracking portals either require complicated OTP mechanisms requiring phone 
+  connectivity or store citizen credentials in plaintext, leaving records vulnerable to 
+  unauthorized enumeration and brute-force lookup attacks.
+
+
+3. PROJECT OBJECTIVES
+---------------------
+- To provide a single, searchable directory of verified public services with verified 
+  government source links, content language tagging, and last-reviewed audit dates.
+- To enforce a zero-hallucination AI assistant that answers strictly from curated 
+  records and explicitly marks unconfirmed requirements as "Not confirmed in the available source."
+- To bridge the digital literacy divide via multi-dialect voice input (en-IN, hi-IN, te-IN) 
+  equipped with custom morphological stemmers for colloquial spoken Telugu and Hindi.
+- To enable anonymous, privacy-preserving grievance submissions that collect only 
+  necessary incident facts (Category, Location, Description, Attachment).
+- To secure status tracking using salted SHA-256 cryptographic hashes and strict 
+  client-rate limiting.
+- To provide transparent citizen dashboards and server-authorized staff queues for demo 
+  resolution workflows.
+
+
+4. PRIMARY USE CASES
+--------------------
+
+USE CASE 1: Colloquial Voice Query in Regional Language (Telugu / Hindi)
+- User Actor: A citizen speaking native Telugu or Hindi who finds typing challenging.
+- Flow: Citizen taps the dedicated voice button ("[ 🎙️ తెలుగు ]"), speaks naturally 
+  (e.g., "నాకు రేషన్ కార్డు కావాలి ఏమి చేయాలి" or "గ్రామంలో వీధి దీపాలు వెలగడం లేదు").
+- System Action: Captures full utterance through Web Speech API, applies Telugu morphological 
+  stemming to strip case suffixes, detects language, and surfaces exact official procedures 
+  with cited sources and plain-language steps.
+
+USE CASE 2: Source-Grounded Civic Service Discovery
+- User Actor: A citizen looking to apply for a Birth Certificate, Pattadar Passbook, or Pension.
+- Flow: Citizen browses or searches the categorized directory (Certificates, Welfare, Land, 
+  Utilities, Municipal, Healthcare, Education).
+- System Action: Displays step-by-step application instructions, official source URLs, and 
+  last-reviewed timestamps. Any criteria not validated in official documents is badged: 
+  "Not confirmed in the available source."
+
+USE CASE 3: Privacy-Preserving Grievance Redressal
+- User Actor: A resident reporting a community issue (e.g., contaminated water supply or garbage dump).
+- Flow: Citizen fills the structured grievance form specifying Category, Ward/Area, Description, 
+  and optional photo attachment. No name, phone number, or email address is collected.
+- System Action: Generates a unique Reference Number (e.g., "SR-20261031-DAC6") and a secure 6-digit PIN. 
+  The system computes and stores a salted SHA-256 hash of the PIN while discarding the plaintext.
+
+USE CASE 4: Rate-Limited, Protected Status Tracking
+- User Actor: Citizen checking the current status of their submitted request.
+- Flow: Citizen enters their Reference Number and 6-digit PIN on the tracking portal.
+- System Action: Hashes the provided PIN, compares against the stored cryptographic digest, 
+  and renders the complete chronological lifecycle (Submitted ➔ Under Review ➔ In Progress ➔ Resolved). 
+  Excessive invalid attempts trigger an automatic security lockout.
+
+USE CASE 5: Authenticated Citizen Dashboard
+- User Actor: Registered citizen (e.g., Demo Citizen Ramesh Kumar).
+- Flow: Logs in via 1-click demo auth or email/password.
+- System Action: Issues an HTTP-only HMAC session token and displays the Citizen Dashboard 
+  pre-populated with all their active requests, live status pills, and direct detail links 
+  without requiring manual PIN re-entry.
+
+USE CASE 6: Server-Protected Staff Redressal Queue
+- User Actor: Municipal / Civic Desk Staff (e.g., Demo Staff Priya Sharma).
+- Flow: Authenticates into the staff portal with verified staff credentials.
+- System Action: Server middleware validates session permissions (HTTP 401/403 enforced). 
+  Staff reviews incoming requests, updates operational status (Under review, In progress, 
+  Resolved, Closed), and logs transparent audit notes visible on citizen timelines.
+
+
+5. TECHNICAL ARCHITECTURE & STACK
+---------------------------------
+- Framework: Next.js 15 (App Router with Server & Client Component hybrid architecture)
+- Language: TypeScript with strict typing
+- Styling: Custom mobile-first responsive design system, glassmorphism headers, 3D card micro-interactions
+- Voice & AI: Web Speech API (en-IN, hi-IN, te-IN), custom morphological stemmer, token-overlap grounding engine
+- Security: Salted SHA-256 credential hashing, HMAC-SHA256 session tokens, HTTP-only SameSite cookies, client rate-limiting
+- Data Layer: Replaceable adapter architecture backed by structured JSON persistence (`src/data/db.json`)
+- Icons: Lucide React
+
+
+6. PRE-CONFIGURED DEMO CREDENTIALS
+----------------------------------
+Citizen Demo Account:
+  - Email: citizen@demo.gov.in
+  - Password: CitizenDemo@2026
+  - Profile: Ramesh Kumar (రమేష్ కుమార్)
+  - Preloaded Requests: Streetlight failure (SR-20261025-8F3A), Contaminated water (SR-20261028-2B9C)
+
+Staff Demo Account:
+  - Email: staff@demo.gov.in
+  - Password: StaffDemo@2026
+  - Profile: Priya Sharma (Staff Reviewer)
+  - Permissions: Full staff queue review, status progression, and audit notes
+
+
+7. REPOSITORY & RUNNING LOCALLY
+-------------------------------
+GitHub Repository: https://github.com/thaherbashadudekula-web/JanSeva.git
+
+Run Instructions:
+  1. git clone https://github.com/thaherbashadudekula-web/JanSeva.git
+  2. cd JanSeva
+  3. npm install
+  4. npm run dev       (Launches on http://localhost:3000)
+  5. node test-e2e.js  (Executes all 18 automated journey verification tests)
+================================================================================
