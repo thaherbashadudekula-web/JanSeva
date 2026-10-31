@@ -106,3 +106,4 @@ npm run start
 
 ## 🔒 Security & Privacy Notice
 This platform is a demonstration civic portal. All grievance records and status updates operate within a local demo environment. No official submissions are made to real-world government departments.
+
